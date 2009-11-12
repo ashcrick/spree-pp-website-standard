@@ -7,6 +7,8 @@
 <!-- display payment summary here -->
 <input id="business" name="business" type="hidden" value="<%= Spree::Paypal::Config[:account] %>" />
 <input id="invoice" name="invoice" type="hidden" value="<%= @order.number %>" />
+<input id="tax_cart" name="tax_cart" type="hidden" value="<%= @order.tax_charges.total %>" />
+<input id="shipping" name="shipping" type="hidden" value="<%= @order.shipping_charges.total %>" />
 
 <% @order.line_items.each_with_index do |item, index| %>
   <input id="item_name_<%= index + 1 %>" name="item_name_<%= index + 1 %>" type="hidden" value="<%= item.variant.product.name %>" />
@@ -15,8 +17,8 @@
 <% end %>
 
 <!-- input id="amount" name="amount" type="hidden" value="58.97" /-->
+<input name="no_shipping" type="hidden" value="2" />
 
-<input name="no_shipping" type="hidden" value="1" />
 <input id="cmd" name="cmd" type="hidden" value="_cart" />
 <input type="hidden" name="upload" value="1" />
 

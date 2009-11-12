@@ -20,6 +20,10 @@
   <% end -%>
 <% end -%>
 <div align="right" style="clear:both">
-  <%= render :partial => 'paypal_checkout' %>
+  <% if current_user %>
+    <%= render :partial => 'paypal_checkout' %>
+  <% else %>
+    <p><b>Please sign up or Log in with your username and password to Checkout</b></p>
+  <% end  %>
 </div>
 
