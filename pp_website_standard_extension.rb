@@ -1,17 +1,10 @@
 # Uncomment this if you reference any of your controllers in activate
 require_dependency 'application'
-=begin
-unless RAILS_ENV == 'production'
-  PAYPAL_ACCOUNT = 'joe@bidness.com'
-  ActiveMerchant::Billing::Base.mode = :test
-else
-  PAYPAL_ACCOUNT = 'Gregg@railsenvy.com'
-end
-=end
+
 class PpWebsiteStandardExtension < Spree::Extension
-  version "0.6.x"
+  version "0.9.2"
   description "Describe your extension here"
-  url "http://github.com/Gregg/spree-pp-website-standard/tree/master"
+  url "http://github.com/ashcrick/spree-pp-website-standard/tree/master"
   
   def activate
 
@@ -44,7 +37,7 @@ class PpWebsiteStandardExtension < Spree::Extension
 
     fsm.events["pend_payment"] = PluginAWeek::StateMachine::Event.new(fsm, "pend_payment")
     fsm.events["pend_payment"].transition(:to => 'payment_pending', :from => 'in_progress')    
-    fsm.after_transition :to => 'payment_pending', :do => lambda {|order| order.update_attribute(:checkout_complete, true)}  
+    fsm.after_transition :to => 'payment_pending', :do => lambda {|order| order.checkout.update_attribute(:completed_at, Time.now())}
 
     fsm.events["pay"].transition(:to => 'paid', :from => ['payment_pending', 'in_progress'])
                                   

@@ -11,8 +11,7 @@ class PaypalPaymentsController < Spree::BaseController
   create.after do
     # mark the checkout process as complete (even if the ipn results in a failure - no point in letting the user 
     # edit the order now)
-    @order.update_attribute("checkout_complete", true)                   
-    object.update_attributes(:email => params[:payer_email], :payer_id => params[:payer_id])
+    object.checkout.update_attribute("email", params[:payer_email])
     ipn = Paypal::Notification.new(request.raw_post)
 
     # create a transaction which records the details of the notification
@@ -54,13 +53,13 @@ class PaypalPaymentsController < Spree::BaseController
 
   # Action for handling the "return to site" link after user completes the transaction on the Paypal website.  
   def successful 
-    @order.update_attribute("ip_address", request.env['REMOTE_ADDR'] || "unknown")
+    @order.checkout.update_attribute("ip_address", request.env['REMOTE_ADDR'] || "unknown")
     # its possible that the IPN has already been received at this point so that
     if @order.paypal_payments.empty?
       # create a payment and record the successful transaction
       paypal_payment = @order.paypal_payments.create(:email => params[:payer_email], :payer_id => params[:payer_id])
       paypal_payment.txns.create(:amount => params[:mc_gross].to_d, 
-                                 :status => "Processed",
+                                 :status => params[:payment_status],
                                  :transaction_id => params[:txn_id],
                                  :fee => params[:payment_fee],
                                  :currency_type => params[:mc_currency],
@@ -74,7 +73,7 @@ class PaypalPaymentsController < Spree::BaseController
     # remove order from the session (its not really practical to allow the user to edit the session anymore)
     session[:order_id] = nil
     
-    if logged_in?
+    if current_user
       @order.update_attribute("user", current_user)
       redirect_to order_url(@order) and return
     else
