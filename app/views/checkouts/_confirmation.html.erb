@@ -1,0 +1,11 @@
+<h2><%= t("confirm") %> and pay with PayPal</h2>
+<div class="inner">         
+	<input id="final_answer" name="final_answer" type="hidden">
+	<div id="bdisplay"><h3><%= t("billing_address")%></h3> To be confirmed with PayPal in the next step</div>
+	<div id="sdisplay"><h3><%= t("shipping_address")%></h3> <div><img src="/images/ajax_loader.gif" id="bconfirm_loader" /></div></div>
+	<div class="clear"></div>
+	<%= render :partial => 'shared/order_details', :locals => {:order => @order} -%>
+  <div class="form-buttons">
+    <%= image_submit_tag "pp_checkout.gif", {:id => "continue_confirmation"}  %>
+  </div>
+</div>

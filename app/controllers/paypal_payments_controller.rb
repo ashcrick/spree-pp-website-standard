@@ -82,4 +82,8 @@ class PaypalPaymentsController < Spree::BaseController
       redirect_to signup_path
     end
   end
+
+  def startup
+    
+  end
 end
