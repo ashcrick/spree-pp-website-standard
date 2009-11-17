@@ -5,7 +5,5 @@
 	<div id="sdisplay"><h3><%= t("shipping_address")%></h3> <div><img src="/images/ajax_loader.gif" id="bconfirm_loader" /></div></div>
 	<div class="clear"></div>
 	<%= render :partial => 'shared/order_details', :locals => {:order => @order} -%>
-  <div class="form-buttons">
-    <%= image_submit_tag "pp_checkout.gif", {:id => "continue_confirmation"}  %>
-  </div>
+        <%= render :partial => 'paypal', :locals => {:order => @order}  -%>
 </div>

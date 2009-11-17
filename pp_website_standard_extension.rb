@@ -31,16 +31,18 @@ class PpWebsiteStandardExtension < Spree::Extension
     end
 
     # add new events and states to the FSM
-#    fsm = Order.state_machines['state']
-#    fsm.events["fail_payment"] = PluginAWeek::StateMachine::Event.new(fsm, "fail_payment")
-#    fsm.events["fail_payment"].transition(:to => 'payment_failure', :from => ['in_progress', 'payment_pending'])
-#
-#    fsm.events["pend_payment"] = PluginAWeek::StateMachine::Event.new(fsm, "pend_payment")
-#    fsm.events["pend_payment"].transition(:to => 'payment_pending', :from => 'in_progress')
-#    fsm.after_transition :to => 'payment_pending', :do => lambda {|order| order.checkout.update_attribute(:completed_at, Time.now())}
-#
-#    fsm.events["pay"].transition(:to => 'paid', :from => ['payment_pending', 'in_progress'])
-                                  
+#    RAILS_DEFAULT_LOGGER.info(Order.state_machines.inspect)
+
+    fsm = Order.state_machines['state']
+    fsm.events["fail_payment"] = PluginAWeek::StateMachine::Event.new(fsm, "fail_payment")
+    fsm.events["fail_payment"].transition(:to => 'payment_failure', :from => ['in_progress', 'payment_pending'])
+
+    fsm.events["pend_payment"] = PluginAWeek::StateMachine::Event.new(fsm, "pend_payment")
+    fsm.events["pend_payment"].transition(:to => 'payment_pending', :from => 'in_progress')
+    fsm.after_transition :to => 'payment_pending', :do => lambda {|order| order.update_attribute(:completed_at, Time.now())}
+
+    fsm.events["pay"].transition(:to => 'paid', :from => ['payment_pending', 'in_progress'])
+
     Order.class_eval do 
       has_many :paypal_payments
     end
