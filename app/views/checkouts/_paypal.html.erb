@@ -1,37 +1,35 @@
-<% if RAILS_ENV == 'development' %>
-  <form name="paypal_checkout" id="paypal_checkout" action="<%= Spree::Paypal::Config[:sandbox_url] %>" method="post">
-<% else %>
-  <form name="paypal_checkout" id="paypal_checkout" action="<%= Spree::Paypal::Config[:paypal_url] %>" method="post">
-<% end %>
-
 <!-- display payment summary here -->
 <input id="business" name="business" type="hidden" value="<%= Spree::Paypal::Config[:account] %>" />
 <input id="invoice" name="invoice" type="hidden" value="<%= @order.number %>" />
-<input id="tax_cart" name="tax_cart" type="hidden" value="<%= @order.tax_charges.total %>" />
-<input id="shipping" name="shipping" type="hidden" value="<%= @order.shipping_charges.total %>" />
-
+<% last_index = -1 %>
 <% @order.line_items.each_with_index do |item, index| %>
   <input id="item_name_<%= index + 1 %>" name="item_name_<%= index + 1 %>" type="hidden" value="<%= item.variant.product.name %>" />
   <input id="amount_<%= index + 1 %>" name="amount_<%= index + 1 %>" type="hidden" value="<%= item.price %>" />
   <input id="quantity_<%= index + 1 %>" name="quantity_<%= index + 1 %>" type="hidden" value="<%= item.quantity %>" />
+  <input id="tax_<%= index + 1 %>" name="tax_<%= index + 1 %>" type="hidden" value="<%= number_to_currency(Calculator::Vat.calculate_tax_on(item.variant.product)) %> " />
+  <% last_index = index %>
 <% end %>
+<input id="last_index" name="last_index" type="hidden" value="<%= last_index + 2 %>" />
+<input id="item_name_<%= last_index + 2 %>" name="item_name_<%= last_index + 2 %>" type="hidden" value="abc" />
+<input id="amount_<%= last_index + 2 %>" name="amount_<%= last_index + 2 %>" type="hidden" value="123" />
+<input id="quantity_<%= last_index + 2 %>" name="quantity_<%= last_index + 2 %>" type="hidden" value="1" />
+<input id="tax_<%= last_index + 2 %>" name="tax_<%= last_index + 2 %>" type="hidden" value="$0.00" />
 
 <!-- input id="amount" name="amount" type="hidden" value="58.97" /-->
 <input name="no_shipping" type="hidden" value="1" />
 
 <input id="cmd" name="cmd" type="hidden" value="_cart" />
-<input type="hidden" name="upload" value="1" />
+<input id="upload" name="upload" type="hidden" value="1" />
 
-<input type="hidden" name="country" id="country" value="<%= @order.bill_address.country if @order.bill_address %>" />
-<input id="zip" name="zip" type="hidden" value="<%= @order.bill_address.zipcode if @order.bill_address %>" />
+<input id="country" name="country" type="hidden" value="" />
 
 <input id="notify_url" name="notify_url" type="hidden" value="<%= Spree::Paypal::Config[:ipn_notify_host] + order_paypal_payments_path(@order) %>" />
-<input type="hidden" name="rm" value ="2"> <!-- tells paypal that the return should be POST instead of GET -->
+<input id="rm" name="rm" type="hidden" value ="2"> <!-- tells paypal that the return should be POST instead of GET -->
 <input id="return" name="return" type="hidden" value="<%= successful_order_paypal_payments_url(@order) %>" />
 <input id="currency_code" name="currency_code" type="hidden" value="AUD" />
-<input type="image" src="/images/pp_checkout.gif" name="paypal_enter" id="paypal_enter" />
 
-</form>
+<input type="image" src="/images/pp_checkout.gif" name="paypal_enter" id="paypal_enter" style="display: none"/>
+
 <script type="text/javascript" charset="utf-8">
   $(function() {
     $("#paypal_enter").click(function() {
