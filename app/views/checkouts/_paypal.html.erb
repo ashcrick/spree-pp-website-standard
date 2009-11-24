@@ -28,10 +28,11 @@
 <input id="return" name="return" type="hidden" value="<%= successful_order_paypal_payments_url(@order) %>" />
 <input id="currency_code" name="currency_code" type="hidden" value="AUD" />
 
-<input type="image" src="/images/pp_checkout.gif" name="paypal_enter" id="paypal_enter" style="display: none"/>
+<input type="image" src="/images/pp_checkout.gif" name="paypal_enter" id="paypal_enter" style="display:none"/>
 
 <script type="text/javascript" charset="utf-8">
   $(function() {
+    $("#paypal_enter").hide();
     $("#paypal_enter").click(function() {
 <% if RAILS_ENV == 'development' %>
       $("#checkout_form").attr("action", "<%= Spree::Paypal::Config[:sandbox_url] %>")
