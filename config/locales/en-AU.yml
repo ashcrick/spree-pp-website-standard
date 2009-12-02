@@ -5,3 +5,4 @@ en-AU:
   zip_code_if_you_have_one: "PostCode (if you have one)"
   payment_failure: "Payment Failure"
   payment_pending: "Payment Pending"
+  pend_payment: "Pend Payment"

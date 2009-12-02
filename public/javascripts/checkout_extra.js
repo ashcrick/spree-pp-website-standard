@@ -1,4 +1,6 @@
 $(function() {
+    $('#paypal_enter').hide();
+    
     var old_continue_section = continue_section;
 
     continue_section = function(section) {
@@ -17,6 +19,7 @@ $(function() {
     var old_update_confirmation = update_confirmation
 
     update_confirmation = function(order) {
+        $('input#paypal_enter').hide();
         var result = old_update_confirmation(order);
         var last_index = $('#last_index').val();
         $('#country').val($('#checkout_bill_address_attributes_country_id :selected').text());
@@ -27,7 +30,7 @@ $(function() {
         }
         $('#item_name_' + last_index).val("Delivery");
         $('#amount_' + last_index).val(shipping);
-        $('#paypal_enter').show();
+        $('input#paypal_enter').show();
         return result;
     }
 })

@@ -39,6 +39,7 @@ class PaypalPaymentsController < Spree::BaseController
       when "Completed"
         if ipn.gross.to_d == @order.total
           @order.pay!
+          @order.update_attribute("completed_at", Time.now)
         else
           @order.fail_payment!
           logger.error("Incorrect order total during Paypal's notification, please investigate (Paypal processed #{ipn.gross}, and order total is #{@order.total})")

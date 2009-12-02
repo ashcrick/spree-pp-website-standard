@@ -15,7 +15,7 @@ class PpWebsiteStandardExtension < Spree::Extension
         @txn_partials << 'pp_standard_txns'
       end
     end
-    
+
     # Add a filter to the OrdersController so that if user is reaching us from an email link we can 
     # associate the order with the user (once they log in)
     OrdersController.class_eval do
